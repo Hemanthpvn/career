@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hemanth PVN - Cyber Security Career Auto-Journey</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #5c94fc; /* Retro sky blue */
+            touch-action: none; 
+            font-family: 'Inter', sans-serif;
+        }
+        
+        #gameCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .retro-font { font-family: 'Press Start 2P', cursive; }
+        .code-font { font-family: 'Fira Code', monospace; }
+
+        /* Modal Styles */
+        .pixel-border {
+            box-shadow: 
+                -4px 0 0 0 white, 4px 0 0 0 white, 0 -4px 0 0 white, 0 4px 0 0 white,
+                -4px -4px 0 0 black, 4px -4px 0 0 black, -4px 4px 0 0 black, 4px 4px 0 0 black,
+                -8px 0 0 0 black, 8px 0 0 0 black, 0 -8px 0 0 black, 0 8px 0 0 black;
+            border-radius: 4px;
+        }
+
+        .modal-overlay {
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(4px);
+            transition: opacity 0.3s ease;
+        }
+
+        /* Computer Animation Styles */
+        .computer-desk {
+            background: #2d3748; /* gray-800 */
+            border: 4px solid #1a202c; /* gray-900 */
+            border-radius: 8px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .monitor-frame {
+            background: #cbd5e0;
+            border-radius: 8px 8px 0 0;
+            padding: 10px;
+            border: 4px solid #a0aec0;
+            position: relative;
+        }
+        
+        .monitor-screen {
+            background-color: #000;
+            height: 120px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 15px rgba(0, 255, 0, 0.2);
+        }
+
+        .screen-glare {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
+            pointer-events: none;
+        }
+
+        .typing-text {
+            color: #4ade80; /* green-400 */
+            font-size: 11px;
+            line-height: 1.4;
+            padding: 8px;
+            white-space: pre-wrap;
+            position: absolute;
+            bottom: 0; /* Pin to bottom so it "scrolls up" as it types */
+        }
+
+        /* Avatar Typing Animation */
+        @keyframes fast-bounce {
+            0%, 100% { transform: translateY(0) rotate(-2deg); }
+            50% { transform: translateY(-4px) rotate(2deg); }
+        }
+        .anim-typing-avatar {
+            animation: fast-bounce 0.2s infinite;
+            display: inline-block;
+        }
+
+        /* Scrollbar for long resume sections */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+    </style>
+</head>
+<body>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- UI Overlay for Score / Instructions -->
+    <div class="absolute top-4 left-4 z-10 pointer-events-none">
+        <h1 class="retro-font text-white text-xl md:text-3xl text-shadow" style="text-shadow: 2px 2px 0 #000;">HEMANTH PVN</h1>
+        <p class="retro-font text-white text-xs md:text-sm mt-2" style="text-shadow: 1px 1px 0 #000;">GEMS: <span id="gemCount">0</span>/4</p>
+        <p class="retro-font text-yellow-300 text-[10px] md:text-xs mt-2" style="text-shadow: 1px 1px 0 #000;">Auto-Journey to Executive Castle</p>
+    </div>
+
+    <!-- Start Screen Modal -->
+    <div id="startModal" class="modal-overlay fixed inset-0 flex items-center justify-center z-50 p-4">
+        <div class="bg-[#1e1e1e] pixel-border text-white p-6 md:p-8 max-w-2xl w-full max-h-[85vh] overflow-y-auto">
+            <h2 class="retro-font text-yellow-400 text-xl md:text-2xl mb-4 text-center">HEMANTH PVN JOURNEY</h2>
+            <div class="text-sm md:text-base space-y-4">
+                <p><strong>Player Profile:</strong> Hemanth PVN</p>
+                <p><strong>Class:</strong> Cyber Security Leader</p>
+                <hr class="border-gray-600">
+                <p><strong>Mission Briefing:</strong> Sit back and observe. My avatar will automatically traverse my cybersecurity journey with the experiences i have gathered. At each milestone, you observe my career progression.</p>
+                <h3 class="retro-font text-green-400 text-sm mt-4">Core Skills Loaded:</h3>
+                <ul class="list-disc pl-5 text-gray-300 grid grid-cols-1 md:grid-cols-2 gap-2 text-xs md:text-sm">
+                    <li>Team Leadership (7 FTEs)</li>
+                    <li>SOAR Implementation & Agentic AI</li>
+                    <li>SIEM Engineering and Architecture (Splunk)</li>
+                    <li>Python & LUA/CEF Parsers</li>
+                    <li>Incident Response - Auto Containment and Remediation</li>
+                </ul>
+            </div>
+            <div class="mt-8 flex justify-center">
+                <button id="startBtn" class="retro-font bg-green-500 hover:bg-green-600 text-white px-6 py-4 border-4 border-white active:translate-y-1 shadow-[0_4px_0_rgb(21,128,61)] active:shadow-[0_0px_0_rgb(21,128,61)] transition-all">START AUTO-JOURNEY</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Modals Container -->
+    <div id="jobModalContainer" class="modal-overlay fixed inset-0 flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white pixel-border text-gray-800 p-4 md:p-8 max-w-4xl w-full max-h-[90vh] overflow-y-auto relative flex flex-col md:flex-row gap-6">
+            
+            <!-- Left Side: Interactive Computer Animation -->
+            <div class="w-full md:w-1/3 flex flex-col items-center justify-start pt-4">
+                <div class="computer-desk w-full p-2 flex flex-col items-center">
+                    <div class="monitor-frame w-full">
+                        <div class="monitor-screen">
+                            <div class="screen-glare"></div>
+                            <div id="screenText" class="code-font typing-text"></div>
+                        </div>
+                        <!-- Monitor stand -->
+                        <div class="w-8 h-4 bg-gray-400 mx-auto mt-2"></div>
+                        <div class="w-16 h-2 bg-gray-500 mx-auto rounded-t"></div>
+                    </div>
+                    
+                    <!-- Desk Surface & Avatar -->
+                    <div class="w-full h-16 bg-gray-700 mt-2 rounded relative flex justify-center items-end pb-2 border-t-4 border-gray-600 shadow-lg">
+                        <div class="w-20 h-3 bg-gray-800 rounded absolute bottom-2"></div> <!-- Keyboard -->
+                        <div class="text-5xl anim-typing-avatar z-10 -mb-2">👨‍💼</div> <!-- Typing Avatar -->
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <p class="text-xs text-gray-500 uppercase font-bold tracking-widest">System Logs Output</p>
+                </div>
+            </div>
+
+            <!-- Right Side: Resume Content -->
+            <div class="w-full md:w-2/3 flex flex-col justify-between">
+                <div id="jobContent" class="space-y-4">
+                    <!-- Content injected via JS -->
+                </div>
+                <div class="mt-8 flex justify-end border-t pt-4 border-gray-200">
+                    <button id="resumeGameBtn" class="retro-font bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 border-4 border-blue-800 active:translate-y-1 text-xs md:text-sm shadow-[0_4px_0_rgb(30,58,138)] active:shadow-[0_0px_0_rgb(30,58,138)] transition-all">
+                        CONTINUE JOURNEY ▶
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Templates for Job Sections & Computer Screens -->
+    <template id="job1">
+        <div data-screen="> Initializing Log Collection...&#10;> Analyzing network traffic...&#10;> [WARNING] Anomalous behavior detected.&#10;> Validating alert legitimacy...&#10;> Confirmed. Escalating to IR.&#10;> Generating remediation report...&#10;> Done.">
+            <h2 class="retro-font text-blue-600 text-sm md:text-lg">GEM 1 COLLECTED</h2>
+            <h3 class="font-bold text-2xl mt-2 text-gray-900">Information Security Analyst</h3>
+            <p class="text-gray-600 font-semibold text-sm">Anthelio, an Atos Business | June 2016 – April 2018</p>
+            <ul class="list-disc pl-5 mt-4 space-y-2 text-sm md:text-base text-gray-700">
+                <li>Identified and analyzed security threats including malware, unauthorized access, and anomalous network behavior, escalating high-severity incidents.</li>
+                <li>Validated security alerts through log and network traffic analysis to confirm incident legitimacy prior to escalation.</li>
+                <li>Authored remediation reports for management and the Incident Response Team.</li>
+            </ul>
+        </div>
+    </template>
+
+    <template id="job2">
+        <div data-screen="> Connecting to SIEM/UEBA...&#10;> Monitoring real-time feeds...&#10;> [ALERT] Advanced Persistent Threat.&#10;> Initiating root-cause analysis...&#10;> Gathering forensic evidence...&#10;> Coordinating cross-functional containment...&#10;> Threat Mitigated.">
+            <h2 class="retro-font text-blue-600 text-sm md:text-lg">GEM 2 COLLECTED</h2>
+            <h3 class="font-bold text-2xl mt-2 text-gray-900">Threat Detection & Response Sr Analyst</h3>
+            <p class="text-gray-600 font-semibold text-sm">Synchrony | May 2018 – December 2018</p>
+            <ul class="list-disc pl-5 mt-4 space-y-2 text-sm md:text-base text-gray-700">
+                <li>Led incident response efforts for confirmed security incidents, coordinating cross-functional teams to contain active threats.</li>
+                <li>Monitored and triaged security alerts and logs across IDS, UEBA, EDR, and SIEM platforms in real time.</li>
+                <li>Conducted root-cause investigations into security incidents, gathering evidence and analyzing attack patterns.</li>
+                <li>Proactively threat-hunted for advanced persistent threats and unauthorized activity.</li>
+            </ul>
+        </div>
+    </template>
+
+    <template id="job3">
+        <div data-screen="> def build_parser(log_type):&#10;>   parse_cef(network_data)&#10;> Compiling Splunk ES Search...&#10;> Indexing Deep Packet Inspection...&#10;> Deploying UEBA risk models...&#10;> [SUCCESS] SOC Alerting Expanded.">
+            <h2 class="retro-font text-blue-600 text-sm md:text-lg">GEM 3 COLLECTED</h2>
+            <h3 class="font-bold text-2xl mt-2 text-gray-900">SecDevOps Developer</h3>
+            <p class="text-gray-600 font-semibold text-sm">Synchrony | Jan 2019 – Nov 2020</p>
+            <ul class="list-disc pl-5 mt-4 space-y-2 text-sm md:text-base text-gray-700">
+                <li>Developed use-cases and signature content across EDR, IDS, UEBA, and DLP platforms.</li>
+                <li>Built LUA and CEF parsers to optimize threat detection within the Deep Packet Inspection (DPI) toolset.</li>
+                <li>Designed UEBA content and risk models to detect anomalous user and asset behavior.</li>
+                <li>Authored complex Splunk Enterprise Security (ES) correlation searches that materially expanded SOC alerting.</li>
+            </ul>
+            <div class="mt-4 bg-yellow-100 border-l-4 border-yellow-500 p-3 text-sm rounded">
+                <strong>🏆 Achievement:</strong> Act as Owner Award (Nov 2020) for proactive leadership in insider-threat detection.
+            </div>
+        </div>
+    </template>
+
+    <template id="job4">
+        <div data-screen="> Loading Management Console...&#10;> Reviewing Pen Test After-Action Reports...&#10;> Optimizing SPL Queries...&#10;> Delivering SOC Training Module...&#10;> [STATUS] Detection Accuracy: 99.8%&#10;> Aligning EDR/IDS priorities...&#10;> Update Complete.">
+            <h2 class="retro-font text-blue-600 text-sm md:text-lg">GEM 4 COLLECTED</h2>
+            <h3 class="font-bold text-2xl mt-2 text-gray-900">Manager, SecDevOps Sr Developer</h3>
+            <p class="text-gray-600 font-semibold text-sm">Synchrony | Nov 2020 – Nov 2021</p>
+            <ul class="list-disc pl-5 mt-4 space-y-2 text-sm md:text-base text-gray-700">
+                <li>Managed individual and team contributions across SOAR, UEBA, SIEM, EDR, IDS, DLP initiatives.</li>
+                <li>Led participation in penetration test reviews, identifying detection gaps and authoring After-Action Reports (AARs).</li>
+                <li>Leveraged advanced Splunk query language (SPL) to develop high-fidelity content and alerting logic.</li>
+                <li>Delivered training and technical guidance to the SOC team on security tooling.</li>
+            </ul>
+        </div>
+    </template>
+
+    <template id="executive">
+        <div data-screen="> LOAD MODULE: AGENTIC AI...&#10;> Initializing Autonomous Response...&#10;> SOAR Playbook v4.0 Active.&#10;> Scaling automation team (15 FTEs)...&#10;> Calculating Metrics: MTTR Reduced by 30%&#10;> [SYSTEM] Executive Authority Granted.&#10;> Awaiting commands, VP Hemanth.">
+            <h2 class="retro-font text-yellow-500 text-xl md:text-2xl text-center mb-4">🏆 EXECUTIVE CASTLE REACHED 🏆</h2>
+            <div class="bg-blue-50 border-2 border-blue-200 rounded-lg p-4 mb-4 shadow-sm">
+                <h3 class="font-bold text-2xl text-blue-900">AVP, SecDevOps – Cyber Intelligence & Automation</h3>
+                <p class="text-blue-700 font-semibold text-sm">Synchrony | April 2021 – Present</p>
+            </div>
+            <div class="space-y-3 text-sm md:text-base text-gray-800">
+                <p><strong>Executive Impact:</strong> Built and lead a cross-functional cyber automation team of 11–15 engineers, scaling the function from a single developer into Synchrony's primary SOAR delivery group.</p>
+                <p><strong>Operational Excellence:</strong> Reduced Mean Time to Respond (MTTR) by ~30% through redesigned playbooks and automation scripts. Authored comprehensive SOAR governance documentation.</p>
+                <p class="bg-purple-100 p-2 rounded border border-purple-200"><strong>Future State:</strong> Currently leading the integration of Agentic AI into the SOAR platform to enable autonomous incident response.</p>
+            </div>
+            
+            <hr class="my-4 border-gray-300">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+                <div>
+                    <h4 class="retro-font text-[10px] text-gray-400 mb-1">EDUCATION</h4>
+                    <p><strong>MCA</strong>, Osmania University (3.9 GPA)</p>
+                    <p><strong>B.Sc. CS</strong>, Osmania University (3.4 GPA)</p>
+                </div>
+                <div>
+                    <h4 class="retro-font text-[10px] text-gray-400 mb-1">CERTIFICATIONS</h4>
+                    <p>CEH • EHCE</p>
+                    <p>AWS Security • Azure Security Eng</p>
+                </div>
+            </div>
+            <div class="mt-4 bg-yellow-100 border-l-4 border-yellow-500 p-3 text-sm rounded">
+                <strong>🏆 Excellence Award (Dec 2021):</strong> Recognized for a fully documented SOAR process that improved tool utilization across cyber operations.
+            </div>
+        </div>
+    </template>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Modals & UI
+        const startModal = document.getElementById('startModal');
+        const startBtn = document.getElementById('startBtn');
+        const jobModalContainer = document.getElementById('jobModalContainer');
+        const jobContent = document.getElementById('jobContent');
+        const resumeGameBtn = document.getElementById('resumeGameBtn');
+        const gemCountDisplay = document.getElementById('gemCount');
+        const screenTextElement = document.getElementById('screenText');
+
+        let gameState = 'START'; // START, PLAYING, PAUSED, END
+        let gemsCollected = 0;
+        let cameraX = 0;
+        
+        // Typewriter effect variables
+        let typeWriterTimeout;
+
+        // Resize Canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const GROUND_HEIGHT = 120;
+
+        // Player configuration for Auto-Walk
+        const player = {
+            x: 50,
+            y: 0, 
+            width: 50,
+            height: 50,
+            speed: 3, // Constant forward speed
+            emoji: '👨‍💼', 
+            yOffset: 0 // Used for walking bounce animation
+        };
+
+        const world = {
+            width: 4500,
+            gems: [],
+            scenery: [],
+            castle: { x: 3800, y: 0, width: 250, height: 300, reached: false }
+        };
+
+        function initWorld() {
+            // Place Gems spaced out along the path
+            const gemSpacing = 700;
+            const startX = 600;
+            
+            world.gems.push({ x: startX, y: canvas.height - GROUND_HEIGHT - 60, width: 50, height: 50, collected: false, templateId: 'job1' });
+            world.gems.push({ x: startX + gemSpacing, y: canvas.height - GROUND_HEIGHT - 60, width: 50, height: 50, collected: false, templateId: 'job2' });
+            world.gems.push({ x: startX + gemSpacing*2, y: canvas.height - GROUND_HEIGHT - 60, width: 50, height: 50, collected: false, templateId: 'job3' });
+            world.gems.push({ x: startX + gemSpacing*3, y: canvas.height - GROUND_HEIGHT - 60, width: 50, height: 50, collected: false, templateId: 'job4' });
+
+            // Setup Castle Y
+            world.castle.y = canvas.height - GROUND_HEIGHT - world.castle.height + 20;
+
+            // Generate Scenery (Clouds & Bushes/Trees)
+            for (let i = 0; i < 40; i++) {
+                world.scenery.push({
+                    type: Math.random() > 0.6 ? 'cloud' : 'tree',
+                    x: Math.random() * world.width,
+                    y: Math.random() * (canvas.height / 2),
+                    size: 60 + Math.random() * 80
+                });
+            }
+            
+            player.y = canvas.height - GROUND_HEIGHT - player.height;
+        }
+
+        function checkCollisions() {
+            // Gem collisions
+            for (const gem of world.gems) {
+                if (!gem.collected &&
+                    player.x + player.width > gem.x &&
+                    player.x < gem.x + gem.width) {
+                        collectGem(gem);
+                }
+            }
+
+            // Castle collision (Executive Spot)
+            if (!world.castle.reached &&
+                player.x + player.width/2 > world.castle.x + 80) {
+                    reachCastle();
+            }
+        }
+
+        // Typewriter effect for the computer screen
+        function typeWriter(text, i) {
+            if (i < text.length) {
+                screenTextElement.innerHTML = text.substring(0, i+1);
+                typeWriterTimeout = setTimeout(() => typeWriter(text, i + 1), 30); // Typing speed
+            }
+        }
+
+        function triggerModal(templateId) {
+            gameState = 'PAUSED';
+            
+            // Clear previous typing effect
+            clearTimeout(typeWriterTimeout);
+            screenTextElement.innerHTML = '';
+
+            // Get Content & Screen Text
+            const template = document.getElementById(templateId);
+            const contentDiv = template.content.firstElementChild;
+            const screenData = contentDiv.getAttribute('data-screen');
+            
+            jobContent.innerHTML = contentDiv.innerHTML;
+
+            // Change button style for the final executive level
+            if (templateId === 'executive') {
+                resumeGameBtn.innerText = "RESTART JOURNEY";
+                resumeGameBtn.classList.replace('bg-blue-500', 'bg-purple-600');
+                resumeGameBtn.classList.replace('border-blue-800', 'border-purple-900');
+                resumeGameBtn.classList.replace('hover:bg-blue-600', 'hover:bg-purple-700');
+            } else if (gemsCollected === 4) {
+                resumeGameBtn.innerText = "APPROACH EXECUTIVE CASTLE ▶";
+            } else {
+                resumeGameBtn.innerText = "CONTINUE JOURNEY ▶";
+            }
+
+            // Show Modal
+            jobModalContainer.classList.remove('hidden');
+
+            // Start typing effect on the computer screen
+            setTimeout(() => typeWriter(screenData, 0), 500);
+        }
+
+        function collectGem(gem) {
+            gem.collected = true;
+            gemsCollected++;
+            gemCountDisplay.innerText = gemsCollected;
+            triggerModal(gem.templateId);
+        }
+
+        function reachCastle() {
+            world.castle.reached = true;
+            triggerModal('executive');
+        }
+
+        resumeGameBtn.onclick = () => {
+            if (world.castle.reached) {
+                location.reload(); // Restart game
+                return;
+            }
+            if (gameState === 'PAUSED') {
+                jobModalContainer.classList.add('hidden');
+                // Give a small push forward so it doesn't instantly collide again
+                player.x += player.width + 10; 
+                gameState = 'PLAYING';
+            }
+        };
+
+        startBtn.onclick = () => {
+            startModal.classList.add('hidden');
+            gameState = 'PLAYING';
+            initWorld();
+        };
+
+        function draw() {
+            // Clear sky
+            ctx.fillStyle = '#5c94fc';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.save();
+            
+            // Smooth Camera follow player, centered on screen, clamping to bounds
+            const targetCameraX = player.x - canvas.width / 3;
+            cameraX += (targetCameraX - cameraX) * 0.1; // Lerp for smoothness
+            cameraX = Math.max(0, Math.min(cameraX, world.width - canvas.width + 500));
+            
+            ctx.translate(-cameraX, 0);
+
+            // Draw Parallax Scenery
+            world.scenery.forEach(item => {
+                if (item.type === 'cloud') {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                    ctx.font = `${item.size}px Arial`;
+                    // Clouds move slightly slower (parallax)
+                    ctx.fillText('☁️', item.x + (cameraX * 0.2), item.y); 
+                } else {
+                    ctx.font = `${item.size}px Arial`;
+                    ctx.fillText('🌲', item.x, canvas.height - GROUND_HEIGHT + 15);
+                }
+            });
+
+            // Draw Main Ground Path
+            const groundY = canvas.height - GROUND_HEIGHT;
+            
+            // Soil
+            ctx.fillStyle = '#c84c0c'; 
+            ctx.fillRect(-100, groundY, world.width + 1000, GROUND_HEIGHT + 100);
+            
+            // Grass Top
+            ctx.fillStyle = '#f8b800'; 
+            ctx.fillRect(-100, groundY, world.width + 1000, 15);
+            
+            // Ground decorative blocks
+            for(let i=0; i<world.width; i+= 200) {
+                 ctx.fillStyle = '#a03c00';
+                 ctx.fillRect(i, groundY + 30, 40, 20);
+                 ctx.fillRect(i+80, groundY + 70, 60, 20);
+            }
+
+            const time = Date.now();
+
+            // Draw Gems (Floating with sine wave animation)
+            world.gems.forEach(gem => {
+                if (!gem.collected) {
+                    const bobY = gem.y + Math.sin(time / 200) * 15;
+                    
+                    // Glow effect
+                    ctx.shadowColor = 'rgba(255, 255, 255, 0.8)';
+                    ctx.shadowBlur = 20;
+                    ctx.font = '50px Arial';
+                    ctx.fillText('💎', gem.x, bobY + 40); 
+                    
+                    // Reset shadow
+                    ctx.shadowBlur = 0;
+                }
+            });
+
+            // Draw Castle
+            ctx.font = '250px Arial';
+            ctx.fillText('🏰', world.castle.x, world.castle.y + world.castle.height - 40);
+            if (gemsCollected === 4 && !world.castle.reached) {
+                const arrowY = world.castle.y - 80 + Math.sin(time / 200) * 20;
+                ctx.font = '60px Arial';
+                ctx.fillText('⬇️', world.castle.x + 100, arrowY);
+            }
+
+            // Draw Player
+            ctx.save();
+            
+            // Simulate walking bobbing effect
+            if (gameState === 'PLAYING') {
+                player.yOffset = Math.abs(Math.sin(time / 100)) * 8;
+            } else {
+                player.yOffset = 0;
+            }
+
+            ctx.translate(player.x + player.width/2, player.y + player.height/2 - player.yOffset);
+            ctx.font = '50px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(player.emoji, 0, 0);
+            ctx.restore();
+
+            ctx.restore();
+        }
+
+        function gameLoop() {
+            if (gameState === 'PLAYING') {
+                // Auto-move right
+                player.x += player.speed;
+                checkCollisions();
+            }
+
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Start Loop
+        window.onload = () => {
+            initWorld(); 
+            draw(); // Draw background immediately behind start modal
+            requestAnimationFrame(gameLoop);
+        };
+
+    </script>
+</body>
+</html>
